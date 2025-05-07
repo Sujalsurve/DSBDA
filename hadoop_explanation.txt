@@ -1,0 +1,150 @@
+This Java code is a **MapReduce program using Hadoop** to **count the number of times each IP address appears** in a log file. It consists of three main parts: the **Mapper**, the **Reducer**, and the **Driver** (main) class. Below is a detailed explanation of each part of the code and the associated Hadoop commands.
+
+---
+
+### 🔹 OVERVIEW
+
+* **Input:** A text file (e.g., `log.txt`) with lines of log data (each line starts with an IP address).
+* **Goal:** Count how many times each unique IP address occurs in the file.
+* **Output:** A list of IP addresses and their respective counts.
+
+---
+
+### 🔸 MAPPER CLASS (`IPMapper`)
+
+```java
+public static class IPMapper extends Mapper<Object, Text, Text, IntWritable>
+```
+
+* **Purpose:** This reads each line of the input file and extracts the **first word/token**, which is assumed to be an IP address.
+* **Output:** Emits a key-value pair of (IP address, 1).
+
+#### Key Parts:
+
+```java
+StringTokenizer itr = new StringTokenizer(value.toString());
+if (itr.hasMoreTokens()) {
+  ip.set(itr.nextToken()); // first token = IP
+  context.write(ip, one); // emit (IP, 1)
+}
+```
+
+---
+
+### 🔸 REDUCER CLASS (`IntSumReducer`)
+
+```java
+public static class IntSumReducer extends Reducer<Text, IntWritable, Text, IntWritable>
+```
+
+* **Purpose:** Aggregates all values for a given IP key.
+* **Input to reduce():** A key (IP) and a list of values `[1, 1, 1, ...]`
+* **Output:** A single key-value pair with the IP and the total count.
+
+#### Key Parts:
+
+```java
+int sum = 0;
+for (IntWritable val : values) {
+  sum += val.get(); // summing all 1s
+}
+result.set(sum);
+context.write(key, result); // emit (IP, total_count)
+```
+
+---
+
+### 🔸 DRIVER / MAIN METHOD
+
+```java
+public static void main(String[] args) throws Excep {
+  Configuration conf = new Configuration();
+  Job job = Job.getInstance(conf, "IP address count");
+```
+
+* Sets up the job:
+
+  * Specifies the **job name**.
+  * Sets the main class and mapper/reducer classes.
+  * Specifies **input and output data types** (`Text`, `IntWritable`).
+  * Sets **input/output file paths**.
+
+```java
+FileInputFormat.addInputPath(job, new Path(args[0]));
+FileOutputFormat.setOutputPath(job, new Path(args[1]));
+```
+
+* Takes the first command-line argument as input path, second as output path.
+
+```java
+System.exit(job.waitForCompletion(true) ? 0 : 1);
+```
+
+* Waits for job completion and exits accordingly.
+
+---
+
+### 🔸 HADOOP COMMANDS EXPLAINED
+
+#### 1. Check working directory (optional debugging)
+
+```bash
+pwd
+ls
+```
+
+#### 2. Upload the log file to HDFS
+
+```bash
+hadoop fs -put Desktop/log.txt log.txt
+```
+
+* This uploads `log.txt` from local file system to HDFS root.
+
+#### 3. Run the MapReduce Job
+
+```bash
+hadoop jar abc.jar abc.abc log.txt dir16
+```
+
+* `abc.jar`: JAR file containing compiled MapReduce code.
+* `abc.abc`: Main class with `public static void main` (fully qualified name).
+* `log.txt`: HDFS input file.
+* `dir16`: Output directory in HDFS for results.
+
+#### 4. View the Output
+
+```bash
+hadoop fs -cat dir16/part-r-00000
+```
+
+* This displays the result file from HDFS.
+* Format: each line will be like:
+
+  ```
+  192.168.0.1    5
+  10.0.0.1       3
+  ```
+
+---
+
+### ✅ EXAMPLE INPUT & OUTPUT
+
+**Sample Input (`log.txt`):**
+
+```
+192.168.0.1 - - [date] "GET /index.html"
+10.0.0.1 - - [date] "POST /login"
+192.168.0.1 - - [date] "GET /home"
+```
+
+**Output (`part-r-00000`):**
+
+```
+10.0.0.1	1
+192.168.0.1	2
+```
+
+---
+
+Would you like help packaging this into a JAR or writing a sample `log.txt` file?

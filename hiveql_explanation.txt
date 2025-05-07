@@ -1,0 +1,273 @@
+This is a detailed walkthrough of a HiveQL-based **Flight Information System application**. It performs various operations like creating databases/tables, inserting data, loading data from files, performing joins, indexing, and querying. The system simulates a simplified **flight database** using Hive on Hadoop.
+
+---
+
+## 🔷 A3) HiveQL Flight Information System - Detailed Explanation
+
+---
+
+### ✅ a) **Creating, Dropping, and Altering Database Tables**
+
+#### Show All Databases
+
+```sql
+hive> show databases;
+```
+
+* Displays all existing Hive databases.
+
+#### Create a New Database
+
+```sql
+create database finfo;
+```
+
+* Creates a new database named `finfo`.
+
+#### Use the Newly Created Database
+
+```sql
+use finfo;
+```
+
+* Switches to `finfo` so that any subsequent tables are created in this namespace.
+
+#### Create a Table
+
+```sql
+create table fight(fno int, year int, dest varchar(10), delay float);
+```
+
+* Creates a table `fight` with columns:
+
+  * `fno` = flight number
+  * `year` = year of flight
+  * `dest` = destination
+  * `delay` = delay in departure
+
+#### Rename the Table
+
+```sql
+alter table fight rename to flight;
+```
+
+* Renames `fight` to `flight`.
+
+#### Add a New Column
+
+```sql
+alter table flight add columns(dur int);
+```
+
+* Adds a new column `dur` (duration) to the `flight` table.
+
+#### Drop a Table
+
+```sql
+drop table fight;
+```
+
+* Drops the `fight` table (if it existed, possibly for cleanup).
+
+---
+
+### ✅ b) **Creating an External Hive Table**
+
+```sql
+create external table if not exists external(fno int, fname string);
+```
+
+* Creates an **external table**, meaning:
+
+  * The table metadata is managed by Hive.
+  * The data is **not deleted** if the table is dropped.
+  * Useful for shared data stored outside Hive.
+
+#### Describe the Table
+
+```sql
+desc external;
+```
+
+* Outputs the schema:
+
+  ```
+  fno    int
+  fname  string
+  ```
+
+---
+
+### ✅ c) **Loading Data, Inserting New Values, Performing Joins**
+
+#### Create an Internal Table for Flights
+
+```sql
+create table flights(fno int, fname string, dest string, dur int)
+row format delimited 
+fields terminated by ',' 
+lines terminated by '\n' 
+stored as textfile;
+```
+
+* Creates a table `flights` with four columns.
+* Specifies the format for reading text files:
+
+  * Fields separated by commas.
+  * Rows separated by newline characters.
+
+#### Insert a Row (Manually)
+
+```sql
+insert into table flight values (1, 2024, "destination", 3, 4);
+```
+
+* Inserts into the `flight` table.
+
+```sql
+insert into table flights values (1, "spicejet", 3, 4);
+```
+
+* Inserts into the `flights` table.
+
+#### View Table Data
+
+```sql
+select * from flights;
+```
+
+#### Load Data from Local File
+
+```bash
+gedit f.txt
+```
+
+* You create a file with flight data:
+
+  ```
+  123,"vistara",5,6
+  321,"indigo",7,8
+  ```
+
+```sql
+load data local inpath "f.txt" overwrite into table flights;
+```
+
+* Loads the content of `f.txt` into the `flights` table, replacing any existing data.
+
+---
+
+### ✅ Joining Tables
+
+#### Create Another Table for Joining
+
+```sql
+create table fjoin(fno int, fname string, dest string, dur int, source string)
+row format delimited 
+fields terminated by ',' 
+lines terminated by '\n' 
+stored as textfile;
+```
+
+* Table with an additional `source` column (departure location).
+
+#### Insert Joinable Data
+
+```sql
+insert into table fjoin values (1, "spicejet", 3, 4, "pune");
+insert into table fjoin values (123, "komdijet", 10, 3, "ai");
+```
+
+#### Disable Auto Join Conversion (to handle large data safely)
+
+```sql
+SET hive.auto.convert.join=false;
+```
+
+#### Join Query
+
+```sql
+select a.fno, b.source from flights a join fjoin b on a.fno=b.fno;
+```
+
+* Performs an **inner join** on `fno` (flight number).
+* Displays flight numbers with their corresponding sources from `fjoin`.
+
+---
+
+### ✅ d) **Create Index on Flight Information Table**
+
+#### Create Index
+
+```sql
+create index findex on table flights(fno) 
+as 'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler' 
+WITH DEFERRED REBUILD;
+```
+
+* Creates a **compact index** on the `fno` field in `flights`.
+* `DEFERRED REBUILD` delays actual index creation until explicitly rebuilt.
+
+#### List Tables (index table is included)
+
+```sql
+show tables;
+```
+
+* Shows:
+
+  * Main tables (`flights`, `flight`, etc.)
+  * Index table: `finfo__flights_findex__`
+
+---
+
+### ✅ e) **Find the Average Departure Delay Per Day in 2008**
+
+Assumption: If `flight` table contains a `delay` column and possibly a `date`/`day` column.
+
+But based on your schema:
+
+* `flight(year, dest, delay, dur)` — no specific day/date column.
+
+So we'll assume you're just getting the average delay for all flights in 2008:
+
+```sql
+select avg(delay) as avg_delay_2008 from flight where year = 2008;
+```
+
+In your version, this line was:
+
+```sql
+select AVG(dur) AS avg_dur from flights;
+```
+
+* This calculates the average duration instead of delay.
+
+You can adjust this based on your schema.
+
+---
+
+### ✅ Extra: Index Rebuild
+
+```sql
+create index hello on table fjoin(fno) as 'COMPACT' WITH DEFERRED REBUILD;
+alter index hello on fjoin REBUILD;
+```
+
+* Index `hello` is created on `fjoin(fno)` and rebuilt manually.
+
+---
+
+## ✅ Summary
+
+| Operation     | HiveQL                                                     |
+| ------------- | ---------------------------------------------------------- |
+| **Database**  | `create database`, `use`, `drop table`                     |
+| **Tables**    | `create`, `alter`, `insert`, `load data`, `external table` |
+| **Joins**     | `select ... join ... on`                                   |
+| **Indexing**  | `create index`, `alter index ... rebuild`                  |
+| **Analytics** | `select avg(...)`                                          |
+
+---
+
+Would you like a `.txt` file of all commands or a sample dataset file (`f.txt`)?
