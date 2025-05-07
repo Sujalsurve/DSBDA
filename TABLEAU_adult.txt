@@ -1,0 +1,140 @@
+Thanks, Sujal. Here's a detailed step-by-step guide to create the required visualizations in **Tableau** using your uploaded CSV files: `adult_dataset.csv` and `Adult_NW1.csv`.
+
+---
+
+## ✅ **Step 1: Load the Dataset in Tableau**
+
+1. Open **Tableau Desktop**.
+2. Click on **“Connect → Text File”**.
+3. Load `adult_dataset.csv`.
+4. (Optional) If using `Adult_NW1.csv` for network/hierarchical data, click **“Add”** and load it too.
+5. Click **“Sheet 1”** to begin your visualization.
+
+---
+
+## 📊 Visualizations
+
+---
+
+### ### 1. **1D (Linear) Data Visualization**
+
+*Goal*\*: Distribution of a single variable.
+
+#### 📌 Example: Bar chart of `education`
+
+**Steps**:
+
+1. Drag `education` to **Columns**.
+2. Drag `education` again to **Rows** → will default to **Count**.
+3. Sort in descending order.
+4. Optional: Drag `income` to **Color** to split by income levels.
+
+✅ **Result**: Bar chart showing number of individuals per education level.
+
+---
+
+### 2. **2D (Planar) Data Visualization**
+
+**Goal**: Relationship between two numerical variables.
+
+#### 📌 Example: Scatter Plot — `age` vs `hours-per-week`
+
+**Steps**:
+
+1. Drag `age` to **Columns**.
+2. Drag `hours-per-week` to **Rows**.
+3. On the **Marks card**, change from *Automatic* to **Circle**.
+4. Optional: Drag `income` to **Color** to differentiate classes.
+
+✅ **Result**: 2D scatter plot of age vs working hours.
+
+---
+
+### 3. **3D (Volumetric) Data Visualization (Simulated)**
+
+**Goal**: Visualize 3 variables using x, y, and color/size.
+
+#### 📌 Example: Age vs Hours-per-week colored by `educational-num`
+
+**Steps**:
+
+1. `age` → Columns.
+2. `hours-per-week` → Rows.
+3. `educational-num` → **Color**.
+4. Optional: `capital-gain` → **Size**.
+
+✅ **Result**: Simulated 3D visualization using x, y, color, and size.
+
+---
+
+### 4. **Temporal Data Visualization**
+
+Your dataset doesn’t contain actual time columns, so simulate temporal change using age.
+
+#### 📌 Example: Line plot of average `hours-per-week` vs `age`
+
+**Steps**:
+
+1. `age` → Columns.
+2. `hours-per-week` → Rows → change aggregation to **Average**.
+3. Use **Line Chart** from Marks card.
+
+✅ **Result**: Trend of working hours across different age groups.
+
+---
+
+### 5. **Multidimensional Data Visualization**
+
+**Goal**: Include multiple variables at once (x, y, color, size, shape).
+
+#### 📌 Example: Scatter plot with:
+
+* X: `age`
+* Y: `hours-per-week`
+* Color: `education`
+* Size: `capital-gain`
+* Shape: `gender`
+
+**Steps**:
+
+1. `age` → Columns
+2. `hours-per-week` → Rows
+3. `education` → Color
+4. \`capital- → Size
+5. `gender` → Shape
+
+✅ **Result**: 5D visualization showing complex relationships.
+
+---
+
+## 🧠 Bonus: Hierarchical / Network Visualization using `Adult_NW1.csv`
+
+Use this if you're exploring relationships (e.g., graph of `workclass` and `occupation`).
+
+### 📌 Example: Node-Link Diagram (simulate hierarchy)
+
+**Steps**:
+
+1. Load `Adult_NW1.csv` into Tableau.
+2. Use `LineX`, `LineY` for placement.
+3. Use `Node` as Label.
+4. Use `Relationship` as Path ID.
+5. On **Marks** card → choose **Line** → then add **Path (Relationship)**.
+
+✅ **Result**: Visualized network (parent-child) of relationships.
+
+---
+
+### 🎨 Final Touches:
+
+* Use **Filters** (e.g., `gender`, `race`) to add interactivity.
+* Customize **Tooltips**.
+* Use **Dashboard** to combine all charts:
+
+  * Go to `Dashboard > New Dashboard`.
+  * Drag sheets onto the dashboard canvas.
+  * Add filter controls and legends.
+
+---
+
+Would you like a Tableau workbook (`.twbx`) built from this data for reference?

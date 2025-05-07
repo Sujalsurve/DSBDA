@@ -1,0 +1,119 @@
+Thanks, Sujal. You've uploaded the **Iris dataset**, which contains:
+
+* **Numeric Features**: `SepalLengthCm`, `SepalWidthCm`, `PetalLengthCm`, `PetalWidthCm`
+* **Categorical Feature**: `Species`
+
+Here's a complete **step-by-step Tableau UI implementation guide** for each visualization type using this dataset.
+
+---
+
+## ✅ Step 1: Load Dataset into Tableau
+
+1. Open **Tableau Desktop**.
+2. Click **"Connect" → "Text File"**.
+3. Select your `Iris.csv` file and click **Open**.
+4. Click **Sheet 1** to start visualizing.
+
+---
+
+## 📊 Required Visualizations
+
+---
+
+### 🟦 a. 1D (Linear) Data Visualization
+
+**Goal**: Show distribution of a single variable.
+
+### 📌 Example: Bar Chart — Count of `Species`
+
+**Steps**:
+
+1. Drag `Species` to **Columns**.
+2. Drag `Species` again to **Rows** → it will default to `COUNT`.
+3. Sort descending for clarity.
+
+✅ **Result**: Bar chart showing count of each Iris species.
+
+---
+
+### 🟩 b. 2D (Planar) Data Visualization
+
+**Goal**: Explore the relationship between two numeric variables.
+
+### 📌 Example: Scatter Plot — `SepalLengthCm` vs `SepalWidthCm`
+
+**Steps**:
+
+1. Drag `SepalLengthCm` to **Columns**.
+2. Drag `SepalWidthCm` to **Rows**.
+3. Change **Marks** to **Circle**.
+4. Drag `Species` to **Color**.
+
+✅ **Result**: Scatter plot with species differentiation by color.
+
+---
+
+### 🟥 c. 3D (Volumetric) Data Visualization (Simulated)
+
+**Goal**: Add a third variable using color or size.
+
+### 📌 Example: SepalLength vs SepalWidth, color by Species, size by PetalLength
+
+**Steps**:
+
+1. `SepalLengthCm` → Columns
+2. `SepalWidthCm` → Rows
+3. `PetalLengthCm` → Size (on Marks card)
+4. `Species` → Color
+
+✅ **Result**: Simulated 3D scatter plot using X, Y, size, and color.
+
+---
+
+### 🟨 d. Temporal Data Visualization (Simulated)
+
+> No actual time feature, so use `Id` as an index proxy (like time)
+
+### 📌 Example: Line chart of `PetalLengthCm` over `Id`
+
+**Steps**:
+
+1. Drag `Id` to **Columns**.
+2. Drag `PetalLengthCm` to **Rows**.
+3. Set **Marks** to **Line**.
+
+✅ **Result**: Line chart showing how petal length changes across samples (like a time series).
+
+---
+
+### 🟪 e. Multidimensional Data Visualization
+
+**Goal**: Visualize multiple features together.
+
+### 📌 Example: SepalLength vs SepalWidth
+
+* Size: `PetalLengthCm`
+* Color: `Species`
+* Shape: `Species`
+
+**Steps**:
+
+1. `SepalLengthCm` → Columns
+2. `SepalWidthCm` → Rows
+3. `PetalLengthCm` → Size
+4. `Species` → Color and Shape (drag to both)
+
+✅ **Result**: Multivariable scatter plot (5D using X, Y, size, color, shape)
+
+---
+
+## 🧩 Optional: Combine into Dashboard
+
+1. Click on **Dashboard > New Dashboard**.
+2. Drag all the sheets you've created.
+3. Add **Filters** like `Species` to make it interactive.
+4. Use **Legends** and **Titles** to label your charts.
+
+---
+
+Would you like me to generate a Tableau `.twbx` workbook example for this dataset as well?
